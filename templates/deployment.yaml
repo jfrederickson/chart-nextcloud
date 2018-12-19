@@ -42,6 +42,22 @@ spec:
             secretKeyRef:
               name: {{ template "nextcloud.mariadb.fullname" . }}
               key: mariadb-password
+        {{- else if .Values.externalDatabase.type == "postgres" }}
+        - name: POSTGRES_HOST
+          value: {{ .Values.externalDatabase.host | quote }}
+        - name: POSTGRES_DB
+          value: {{ .Values.externalDatabase.database | quote }}
+        - name: POSTGRES_USER
+          value: {{ .Values.externalDatabase.user | quote }}
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              {{- if .Values.externalDatabase.passwordSecretRef }}
+              name: {{ .Values.externalDatabase.passwordSecretRef }}
+              {{- else }}
+              name: {{ printf "%s-%s" .Release.Name "externaldb" }}
+              {{- end }}
+              key: db-password
         {{- else }}
         - name: MYSQL_HOST
           value: {{ .Values.externalDatabase.host | quote }}
