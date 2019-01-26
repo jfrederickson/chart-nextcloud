@@ -34,6 +34,10 @@ ingress:
     #   hosts:
     #     - nextcloud.cluster.local
 
+istio:
+  enabled: false
+  gateway: ingressgateway
+
 ## nextcloud host to create application URLs
 ## ref: https://github.com/bitnami/bitnami-docker-nextcloud#configuration
 ##

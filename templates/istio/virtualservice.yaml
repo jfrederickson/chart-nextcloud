@@ -1,0 +1,27 @@
+{{- if include "nextcloud.host" . }}
+{{- if .Values.istio.enabled }}
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: {{ template "nextcloud.fullname" . }}
+  labels:
+    app: {{ template "nextcloud.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  hosts:
+    - {{ include "nextcloud.host" . | quote }}
+  gateways:
+    - {{ template "nextcloud.fullname" . }}-gateway
+  http:
+    - match:
+        - uri:
+            prefix: /
+      route:
+        - destination:
+            port:
+              number: 80
+            host: {{ template "nextcloud.fullname" . }}
+{{- end }}
+{{- end }}

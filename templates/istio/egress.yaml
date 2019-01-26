@@ -1,0 +1,17 @@
+{{- if include "nextcloud.host" . }}
+{{- if .Values.istio.enabled }}
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: {{ template "nextcloud.fullname" . }}-db
+spec:
+  hosts:
+    - {{ .Values.externalDatabase.host | quote }}
+  ports:
+    - number: {{ .Values.externalDatabase.port }}
+      name: {{ .Values.externalDatabase.type }}
+      protocol: TCP
+  resolution: DNS
+  location: MESH_EXTERNAL
+{{- end }}
+{{- end }}
